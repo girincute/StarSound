@@ -14,6 +14,17 @@ router.get('/', function (req, res, next) {
     });
 });
 
+// 글 검색
+router.get('/search/:description', function (req, res, next) {
+    console.log('글 검색 접근!')
+    console.log(req.params.description);
+    let sql = `SELECT * FROM board WHERE board_des like '%${req.params.description}'`
+    conn.query(sql, (err, rows, fields) => {
+        if (err) throw err;
+        res.status(200).json(rows);
+    });
+});
+
 // 글 좋아요
 router.get('/:id/like', function (req, res, next) {
     console.log('글 좋아요 접근!')
@@ -44,9 +55,9 @@ router.post('/', function (req, res, next) {
     let title = req.body.title;
     let description = req.body.description;
     let today = getTimeStamp();
-
+    console.log(description);
     description = description.replace( /시발/gi, '**');
-    
+
     if (description == undefined || description == "" || description == null) {
         return res.status(500).send('description 값 존재 하지 않음');
     }
