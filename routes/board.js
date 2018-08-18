@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
 router.get('/search/:description', function (req, res, next) {
     console.log('글 검색 접근!')
     console.log(req.params.description);
-    let sql = `SELECT * FROM board WHERE board_des like '%${req.params.description}'`
+    let sql = `SELECT * FROM board WHERE board_des like '%${req.params.description}%'`
     conn.query(sql, (err, rows, fields) => {
         if (err) throw err;
         res.status(200).json(rows);
