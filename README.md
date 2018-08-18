@@ -31,6 +31,7 @@ StarSound
 GET SERVER/board 전체 글 보기
 GET SERVER/board/:id 특정 글 보기
 GET SERVER/board/:id/like 특정 글 좋아요
+GET SERVER/board/search/:description 특정 내용 검색
 
 POST /board 글 보내기
 body : 
@@ -38,5 +39,6 @@ body :
   description : 내용
 
 DELETE /board/:id 특정 글 지우기
+
 
 ```
