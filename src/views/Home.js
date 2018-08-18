@@ -154,7 +154,7 @@ export default class Home extends Component {
   state = {
     posts: [],
     loading: true,
-    search: true,
+    search: false,
     post: '',
     result: [],
   }
@@ -221,7 +221,7 @@ export default class Home extends Component {
         const result = res.data;
         console.log(result)
         this.setState({
-          result, search: false
+          result, search: true
         })
       })
     }
@@ -255,7 +255,7 @@ export default class Home extends Component {
                 기록들 ..
             </Header>
             <SearchPostResult>
-              { this.state.search ? '' : this.state.result.map((post) =>
+              { this.state.search && this.state.result.map((post) =>
                 <PostBox key={post.board_idx}><pre>{post.board_des}</pre><LikeButton onClick={this.handleLikeClick} value={post.board_idx}>♡ {post.board_hit}</LikeButton></PostBox>) }
             </SearchPostResult>
               { 
