@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import styled, { injectGlobal } from 'styled-components';
+import Notifications, { notify } from 'react-notify-toast';
 import SearchIcon from '../images/s2.png';
 import JuaFont from '../font/jua.ttf'
 
@@ -143,13 +144,19 @@ const LikeButton = styled.button`
   border: none
 `;
 
+const SearchPostResult = styled.div`
+
+`;
+
 
 const server = 'http://youngseo.crong.kr:3000/'
 export default class Home extends Component {
   state = {
     posts: [],
     loading: true,
-    post: ''
+    search: true,
+    post: '',
+    result: [],
   }
 
   componentDidMount = (e) => {
@@ -179,17 +186,22 @@ export default class Home extends Component {
           'Content-Type': 'application/json',
     }})
     .then(res => {
-      console.log(res)
-      window.location.reload()
+      notify.show('글 등록 완료', 'success', 1000);
+      
+      setTimeout(function() {
+        window.location.reload()
+      }, 1000);
     })
   }
 
   handleLikeClick = (e) => {
-    console.log('like click')
     axios.get(server + 'board/' + e.target.value + '/like')
     .then(res => {
-      console.log('좋아요 완료')
-      window.location.reload()
+      notify.show('좋아요 완료', 'success', 3000);
+      
+      setTimeout(function() {
+        window.location.reload()
+      }, 2000);
     })
   }
 
@@ -197,13 +209,32 @@ export default class Home extends Component {
     window.scrollTo(0, 0)
   }
 
+  handleSearch = (e) => {
+    alert('a')
+  }
+
+  handleKeyPressAndSearch = (e) => {
+    if(e.key == 'Enter'){
+      alert(e.target.value)
+      axios.get(server + 'board/search/' + e.target.value)
+      .then(res => {
+        const result = res.data;
+        console.log(result)
+        this.setState({
+          result, search: false
+        })
+      })
+    }
+  }
+
   render() {
     let postData = [...this.state.posts]
     postData.sort((a,b) => b.board_idx - a.board_idx)
     return (
       <div>
+        <Notifications />
         <Navbar>
-          <SearchButton placeholder="검색"/>
+          <SearchButton placeholder="검색" onChange={this.handleKeyPressAndSearch} onKeyPress={this.handleKeyPressAndSearch} />
         </Navbar>
         <Container>
           <PostBoxContainer>
@@ -223,6 +254,10 @@ export default class Home extends Component {
             <Header>
                 기록들 ..
             </Header>
+            <SearchPostResult>
+              { this.state.search ? '' : this.state.result.map((post) =>
+                <PostBox key={post.board_idx}><pre>{post.board_des}</pre><LikeButton onClick={this.handleLikeClick} value={post.board_idx}>♡ {post.board_hit}</LikeButton></PostBox>) }
+            </SearchPostResult>
               { 
                 this.state.loading ? 'loading.. ' : 
                 postData.map((post) =>
